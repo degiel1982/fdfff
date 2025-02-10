@@ -1,9 +1,9 @@
-local like_honey = { radius = 1, check_distance = 3}
+local like_honey = { radius = 1, pickup_delay = 5}
 
 function like_honey:new(radius)
     setmetatable({}, like_honey)
     self.radius = radius
-    self.check_distance = check_distance
+    self.pickup_delay = pickup_delay
     return self
 end
 
@@ -49,7 +49,7 @@ function like_honey:check_if_owner_is_player(player, owner)
     return player:get_player_name() == owner
 end
 
-local honey = like_honey:new(1,3)
+local honey = like_honey:new(1,5)
 core.register_globalstep(function(dtime)
     local current_time = core.get_us_core()
     local players = core.get_connected_players()
@@ -77,11 +77,11 @@ core.register_globalstep(function(dtime)
                                 obj:remove()
                             else
                                 local itemstack = ItemStack(obj:get_luaentity().itemstring)
-                                --if delay
-                                --itemstack:get_meta():set_string("digger_aio", "")
-                               -- itemstack:get_meta():set_string("magnet_owner", "")
-                               -- itemstack:get_meta():set_int("aio_digger_time", 0)
-                                --
+                                local time_dropped = itemstack:get_meta():get_int("aio_digger_time")
+                                local difference = (current_time - time_dropped) / 1000
+                                if difference >= honey.pickup_delay then
+                                    core.chat_send_player(player_name, "Time is up")
+                                end
                             end
                         end
                     end
