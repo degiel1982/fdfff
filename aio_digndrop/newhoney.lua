@@ -51,6 +51,7 @@ end
 
 local honey = like_honey:new(1,3)
 core.register_globalstep(function(dtime)
+    local current_time = core.get_us_core()
     local players = core.get_connected_players()
     if players then
         for _, player in ipairs(players) do
